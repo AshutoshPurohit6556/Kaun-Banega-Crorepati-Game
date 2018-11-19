@@ -8,7 +8,7 @@
 			     a.CLASS- XIIB
 			     b.ROLL NO.-
 		 TITLE - KAUN BANEGA CROREPATI SIMULATION
-/****************************************************************************/
+****************************************************************************/
 
 /****************************************************************************
 *                HEADER FILE INCLUSIONS
@@ -121,105 +121,117 @@ class Admin
   char name[50];
   char password[25];
  public:
+  void regadmin()  //Function to register an admin
+  {
+	  ofstream fout("ADMIN1.txt",ios::app|ios::binary);
+	  fout.write((char*)this,sizeof(*this));
+	  fout.close();
+  }
+  void getdata()  //Function to enter values related to admin
+  {
+    cout<<"\nEnter Name = ";
+    gets(name);
+    cout<<"Enter ID = ";
+    cin>>adid;
+    cout<<"Enter Password = ";
+    gets(password);
+    cout<<"New Admin Registered\n\n";
+    regadmin();
+    cout<<"Press Any Key To Continue";
+    getch();
+  }
   void adminmenu()  //Function to perform operations of an admin
   {
     while(1)
     {
       clrscr();
       char choice,pswd[25];
-      int id;
+      int id,flag=0;
       cout<<"\t\tWELCOME TO KBC ADMIN MENU\n\n";
       cout<<"\t\t1. Admin Login\n\n";
-      cout<<"\t\t2. Back\n\n";
+      cout<<"\t\t2. Admin Sign Up\n\n";
+      cout<<"\t\t3. Back\n\n";
       cout<<"Enter Your Choice = ";
       cin>>choice;
+      ifstream fin("ADMIN1.txt",ios::binary);
       if(choice=='1')
       {
-	    ifstream fin("ADMIN.txt",ios::binary);
 	    cout<<"Enter Admin ID = ";
 	    cin>>id;
 	    cout<<"Enter Password = ";
 	    gets(pswd);
-	    int found='n';
+	    while(!fin.eof()){
 	    fin.read((char*)this,sizeof(*this));
 	    if((!strcmp(password,pswd))&&id==adid)
-	      found='f';
-	    else
 	    {
-	      while(!fin.eof())
-	      {
-		if((!strcmp(password,pswd))&&id==adid)
-		  found='f';
-		else
-		  fin.read((char*)this,sizeof(*this));
-	      }
-	      if((!strcmp(password,pswd))&&id==adid)
-		  found='f';
-	    }
-	    if(found=='f')
-	    {
-	      while(1)
+	       flag=1;
+	       clrscr();
+	       cout<<"Welcome ";
+	       puts(name);
+	       cout<<"\n\nOptions for You: \n";
+	       cout<<"\n1. Insert Questions\n\n";
+	       cout<<"2. Delete Questions\n\n";
+	       cout<<"3. View Questions\n\n";
+	       cout<<"4. Sign Out and Exit\n\n";
+	       cout<<"Enter Your Choice = ";
+	       cin>>choice;
+	       if(choice=='1')
+	       {
+		 char ch;
+		 do
 		 {
-		  clrscr();
-		  cout<<"Welcome ";
-		  puts(name);
-		  cout<<"\n\nOptions for You: \n";
-		  cout<<"\n1. Insert Questions\n\n";
-		  cout<<"2. Delete Questions\n\n";
-		  cout<<"3. View Questions\n\n";
-		  cout<<"4. Sign Out and Exit\n\n";
-		  cout<<"Enter Your Choice = ";
-		  cin>>choice;
-		  if(choice=='1')
-		  {
-		  char ch;
-		  do
-		  {
-		    q.insques();
-		    cout<<"\nDo you want to enter more(Y/N)? = ";
-		    cin>>ch;
-		  }while(ch=='y'||ch=='Y');
-		}
-		  else if(choice=='2')
-		  {
+		   q.insques();
+		   cout<<"\nDo you want to enter more(Y/N)? = ";
+		   cin>>ch;
+		 }while(ch=='y'||ch=='Y');
+	       }
+	       else if(choice=='2')
+	       {
 		    int gid;
 		    clrscr();
 		    cout<<"Enter ID of Question to be deleted = ";
 		    cin>>gid;
 		    q.deleteques(gid);
 		    getch();
+		    break;
 		}
-		  else if(choice=='3')
-	      {
+		else if(choice=='3')
+		{
 		  cout<<"Displaying all questions...\n";
 		  system("pause");
 		  q.showallques();
 		}
-		  else
-	      {
-		  cout<<"Moving back to KBC Header...\n";
-		  system("pause");
-		  kbcheader();
-		  }
+		else
+		{
+		  cout<<"Moving back to KBC Header...";
+		  break;
+		}
+		break;
+	      }
+	      else
+		  fin.read((char*)this,sizeof(*this));
 	}
-	    }
-	  else
-	      {
-		    cout<<"Sorry, No User Found!!!";
-		    cout<<"Moving Back To KBC Header\n";
-		    getch();
-		    kbcheader();
-	  }
-	      fin.close();
+	if(!flag)
+	{
+	   cout<<"Sorry, couldn't find any admin.";
+	   cout<<"Returning to admin menu.";
+	   getch();
 	}
+      }
 	else if(choice=='2')
+	  getdata();
+	else if(choice=='3')
 	  break;
 	else
 	  cout<<"Wrong Choice!!!";
       }
       clrscr();
     }
-}ar;
+    int getid()  //Function to get the ID of an admin to check
+    {
+      return adid;
+    }
+}a1,ar;
 
 void credits()  //Function to display credits of this project
 {
@@ -404,7 +416,7 @@ void play()  //Function to play the game
   int count=0;
   for(int i=0;i<15;i++)
   {
-      a=rand()%q.noq();
+      a=rand()%15;
       for(int j=0;j<i;j++)
 	if(qp[j]==a)
 	  break;
